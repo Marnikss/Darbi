@@ -1,0 +1,189 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class Main {
+public static int drawCard() {
+Random rand = new Random();
+return rand.nextInt(10) + 1;
+}
+
+private static void determineOutcome(Player player, Dealer dealer) {
+
+int playerPoints = player.getPoints();
+int dealerPoints = dealer.getPoints();
+
+if (dealerPoints > 21 && playerPoints > 21) {
+System.out.println("Draw");
+} else if (playerPoints > 21) {
+System.out.println(player.getName() + " busts, add win to dealer");
+dealer.addWin();
+player.addLoss();
+} else if (dealerPoints > 21) {
+System.out.println("Dealer busts, add win to " + player.getName());
+player.addWin();
+dealer.addLoss();
+} else if (playerPoints > dealerPoints) {
+System.out.println(player.getName() + " wins");
+player.addWin();
+dealer.addLoss();
+} else if (dealerPoints > playerPoints) {
+System.out.println("Dealer wins");
+dealer.addWin();
+player.addLoss();
+} else {
+System.out.println("Draw.");
+}
+}
+
+public static void main(String[] args) {
+Scanner sc = new Scanner(System.in);
+
+System.out.println("Enter your name: ");
+String playerName = sc.nextLine();
+Player player = new Player(playerName);
+Dealer dealer = new Dealer();
+
+while (true) {
+
+//speletaja gajiens
+System.out.println(player.getName() + " turn:");
+player.setPoints(player.getPoints() + drawCard());
+player.setPoints(player.getPoints() + drawCard());
+System.out.println(player.getName() + " sum: " + player.getPoints());
+while (player.getPoints() < 21) {
+System.out.println("Do you want to hit or stay? (hit/stay)");
+String playerAction = sc.nextLine();
+if (playerAction.equals("hit")) {
+player.setPoints(player.getPoints() + drawCard());
+System.out.println(player.getName() + " sum: " + player.getPoints());
+} else if (playerAction.equals("stay")) {
+break;
+} else {
+System.out.println("Invalid action, try again.");
+}
+}
+
+// datora gajiens
+System.out.println("Dealer turn:");
+dealer.setPoints(dealer.getPoints() + drawCard());
+dealer.setPoints(dealer.getPoints() + drawCard());
+
+while (dealer.getPoints() < 17) {
+dealer.setPoints(dealer.getPoints() + drawCard());
+System.out.println("Dealer sum: " + dealer.getPoints());
+}
+determineOutcome(player, dealer);
+
+System.out.println("Do you want to see the stats? (yes/no)");
+String showStats = sc.nextLine();
+if (showStats.equals("yes")) {
+System.out.println(player.getName() + " wins: " + player.getWins() + " losses: " + player.getLosses());
+System.out.println("Dealer wins: " + dealer.getWins() + " losses: " + dealer.getLosses());
+}
+
+player.setPoints(0);
+dealer.setPoints(0);
+
+System.out.println("Do you want to play again? (yes/no)");
+String playAgain = sc.nextLine();
+
+if (playAgain.equals("no")) {
+break;
+}
+}
+}
+}
+
+------------------- Main function ends ---------------------------------
+
+------------------- Dealer class starts --------------------------------
+public class Dealer {
+private int points;
+private int wins;
+private int losses;
+
+public Dealer() {
+this.points = 0;
+this.wins = 0;
+this.losses = 0;
+}
+
+public int getPoints() {
+return this.points;
+}
+
+public void setPoints(int points) {
+this.points = points;
+}
+
+public int getWins() {
+return this.wins;
+}
+
+public int getLosses() {
+return this.losses;
+}
+
+public void addWin() {
+this.wins += 1;
+}
+
+public void addLoss() {
+this.losses += 1;
+}
+}
+----------------------- Dealer class ends --------------------------------------
+
+----------------------- Player class starts ------------------------------------
+
+class Player {
+private String name;
+private int points;
+private int wins;
+private int losses;
+
+public Player(String name) {
+this.name = name;
+this.points = 0;
+this.wins = 0;
+this.losses = 0;
+}
+
+public String getName() {
+return name;
+}
+
+public int getPoints() {
+return points;
+}
+
+public void setPoints(int points) {
+this.points = points;
+}
+
+public int getWins() {
+return wins;
+}
+
+public void setWins(int wins) {
+this.wins = wins;
+}
+
+public int getLosses() {
+return losses;
+}
+
+public void setLosses(int losses) {
+this.losses = losses;
+}
+
+public void addWin() {
+this.wins++;
+}
+
+public void addLoss() {
+this.losses++;
+}
+}
+------------------------------ Player class ends ------------------------------
+
